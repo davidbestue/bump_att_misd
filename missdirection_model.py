@@ -143,7 +143,7 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
         stimulus1=zeros((N))
         stimulus2=zeros((N))
         for i in range(0, N):
-            stimulus1[i]=e**(kappa_stim*cos(theta[i] + origin - separation)) / (2*pi*scipy.special.i0(kappa_stim))
+            stimulus1[i]=e**(kappa_stim*cos(theta[i] + origin )) / (2*pi*scipy.special.i0(kappa_stim))
             stimulus2[i]=e**(kappa_stim*cos(theta[i] + origin + separation)) / (2*pi*scipy.special.i0(kappa_stim))
         stimulus= (stimulus1 + stimulus2);
         stimulus=reshape(stimulus, (N,1))
@@ -191,9 +191,8 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
 
     #p_targ1 = int((N * np.degrees(origin + separation))/360)
     #p_targ2 = int((N * np.degrees(origin - separation))/360)
-    p_targ1 = int((N * np.degrees(np.pi + separation))/360)
+    p_targ1 = int((N * np.degrees(np.pi))/360)
     p_targ2 = int((N * np.degrees(np.pi - separation))/360)
-    #
     if plot_rate==True:
         #### plot dynamics
         fig = plt.figure()
@@ -362,9 +361,9 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
     ### Output
     total_sep=np.degrees(2*separation)
     final_bias = np.mean(final_bias)
-    180_active = rE[int(512/2)][0]>2
+    active = rE[256][0]>2
     #print(total_sep)
-    return(final_bias, bias_b1, bias_b2, 180_active, rE, RE, estimated_angles, total_sep, kappa_E, kappa_I, r_squared, success, number_of_bumps, decode_func, std_g) #bias_b1, bias_b2)
+    return(final_bias, bias_b1, bias_b2, active, rE, RE, estimated_angles, total_sep, kappa_E, kappa_I, r_squared, success, number_of_bumps, decode_func, std_g) #bias_b1, bias_b2)
 
 
 ###
