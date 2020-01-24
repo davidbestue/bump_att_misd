@@ -108,7 +108,7 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
     v_I=zeros((N));
     WE=zeros((N,N));
     WI=zeros((N,N));
-    separation =  angle_separation*pi/360
+    separation =  np.radians(angle_separation)
     angle_target=angle_target_i
     angle_distractor=angle_target_i-angle_separation
     if n_stims==1:
