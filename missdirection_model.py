@@ -362,8 +362,9 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
     ### Output
     total_sep=np.degrees(2*separation)
     final_bias = np.mean(final_bias)
+    180_active = rE[int(512/2)][0]>2
     #print(total_sep)
-    return(final_bias, bias_b1, bias_b2, rE, RE, estimated_angles, total_sep, kappa_E, kappa_I, r_squared, success, number_of_bumps, decode_func, std_g) #bias_b1, bias_b2)
+    return(final_bias, bias_b1, bias_b2, 180_active, rE, RE, estimated_angles, total_sep, kappa_E, kappa_I, r_squared, success, number_of_bumps, decode_func, std_g) #bias_b1, bias_b2)
 
 
 ###
