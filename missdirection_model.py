@@ -332,7 +332,7 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
             final_bias = [abs(bias_b2), abs(bias_b2)]
     ##
     else:
-        print('Error simultaion')
+        #print('Error simultaion')
         bias_b1=999
         bias_b2=decode_rE(rE)
         estimated_angles=999
