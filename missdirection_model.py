@@ -276,94 +276,30 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
     #number_of_bumps = len(scipy.signal.find_peaks(r, 2)[0]) 
 
     if number_of_bumps ==2:
-        param, covs = curve_fit(bi_von_misses, X, y, p0=[separation, 75, -separation, 75], maxfev=10000)
+        param, covs = curve_fit(bi_von_misses, X, y, p0=[separation, 75, -separation, 75], maxfev=100000)
         ans = (exp( param[1] * cos(X-param[0]))) / (2*pi*scipy.special.i0(param[1])) + (exp( param[3] * cos(X-param[2]))) / (2*pi*scipy.special.i0(param[3])) 
         estimated_angle_1=np.degrees(param[0]+pi)  
         estimated_angle_2=np.degrees(param[2]+pi)  
         estimated_angles = [estimated_angle_1, estimated_angle_2]
         estimated_angles.sort()
-        bias_b1 = estimated_angles[0] -  np.degrees(origin - separation) ### change the error stuff
-        bias_b2 =  np.degrees(origin + separation) - estimated_angles[1]
-        final_bias = [bias_b1, bias_b2]
-        skip_r_sq=False
-        success=True
-        decode_func = 0
-        if n_stims==1:
-            print('Error simultaion')
-            bias_b1=999
-            bias_b2=999
-            estimated_angles=999
-            final_bias=[999, 999]
-            plot_fit=False
-            skip_r_sq=True
-            r_squared=0
-            success=False ## to eliminate wrong simulations easily at the end
-            decode_func = 0
+        abs_bias = abs(estimated_angles[0] -  angle_target_i ) ### change the error stuff
+        bias_b2 = estimated_angles[0] -  angle_target_i 
         #
-    #
     elif number_of_bumps ==1:
-        param, covs = curve_fit(von_misses, X, y, maxfev=10000)
-        ans = (exp( param[1] * cos(X-param[0]))) / (2*pi*scipy.special.i0(param[1])) 
-        if param[0]<0:
-            estimated_angles =decode_rE(rE)
-            #print('1 - with decode function')
-            decode_func = 1
-        else:
-            estimated_angles=np.degrees(param[0]+pi) 
-            decode_func = 0 
-        #
-        bias_b1 = estimated_angles - np.degrees( origin - separation)
-        bias_b2 = np.degrees(origin + separation) - estimated_angles  ## bias (positive means attraction)
-        ###final_bias = [bias_b1, bias_b2]  
-        final_bias = [bias_b1, bias_b2] # de la otra manera estas forzando la media todo el rato
-        skip_r_sq=False
-        success=True
-        #print('Gaussian fit')
-        param_g, covs_g = curve_fit(gauss, X, y, maxfev=10000)
-        std_g = param_g[1]
-
-
-
-
-        if n_stims==1:
-            estimated_angles=np.degrees(param[0]+pi)
-            bias_b1 = np.degrees(origin) - estimated_angles ## con fit
-            bias_b2 = 180 - decode_rE(rE) ## scon decode_rE
-            final_bias = [abs(bias_b2), abs(bias_b2)]
+        estimated_angles =decode_rE(rE)
+        abs_bias = abs( 180 - decode_rE(rE) )## scon decode_rE
+        bias_b2 = 180 - decode_rE(rE) ## scon decode_rE
+        
     ##
     else:
-        #print('Error simultaion')
-        bias_b1=999
-        bias_b2=decode_rE(rE)
-        estimated_angles=999
-        final_bias=[999, 999] #do not report a sign bias (it appears a an outlier furing the analysis)
-        plot_fit=False ## do not plot the data when there is an error of the sim (maybe take off for some examples)
-        skip_r_sq=True
-        r_squared=0
-        success=False ## to eliminate wrong simulations easily at the end
-        decode_func = 0
-
-    #error_fit (r_squared)
-    if skip_r_sq==False:
-        residuals = y - ans
-        ss_res = np.sum(residuals**2)
-        ss_tot = np.sum((y-numpy.mean(y))**2)
-        r_squared = 1 - (ss_res / ss_tot)
-
-    #plot fit
-    if plot_fit==True:
-        plt.figure()
-        plt.plot(X, y, 'o', color ='red', label ="data") 
-        plt.plot(X, ans, '--', color ='blue', label ="fit") 
-        plt.legend() 
-        plt.show(block=False) 
-    ##
-    ### Output
-    total_sep=np.degrees(2*separation)
-    final_bias = np.mean(final_bias)
+        estimated_angles =decode_rE(rE)
+        abs_bias = abs( 180 - decode_rE(rE) )## scon decode_rE
+        bias_b2 = 180 - decode_rE(rE) ## scon decode_rE
+    ###
+    ###
     active = rE[256][0]>2
-    #print(total_sep)
-    return(final_bias, bias_b1, bias_b2, active, rE, RE, estimated_angles, total_sep, kappa_E, kappa_I, r_squared, success, number_of_bumps, decode_func, std_g) #bias_b1, bias_b2)
+    #
+    return(abs_bias, bias_b2, active, rE, RE, estimated_angles, total_sep, kappa_E, kappa_I, number_of_bumps ) #bias_b1, bias_b2)
 
 
 ###
