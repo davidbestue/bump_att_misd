@@ -191,8 +191,8 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
 
     #p_targ1 = int((N * np.degrees(origin + separation))/360)
     #p_targ2 = int((N * np.degrees(origin - separation))/360)
-    p_targ1 = int((N * np.degrees(np.pi))/360)
-    p_targ2 = int((N * np.degrees(np.pi - separation))/360)
+    p_targ1 = int((N * np.degrees(np.pi- separation))/360)
+    p_targ2 = int((N * np.degrees(np.pi ))/360)
     if plot_rate==True:
         #### plot dynamics
         fig = plt.figure()
