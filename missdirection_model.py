@@ -299,7 +299,7 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
     ###
     active = rE[256][0]>2
     #
-    return(abs_bias, bias_b2, active, rE, RE, estimated_angles, total_sep, kappa_E, kappa_I, number_of_bumps ) #bias_b1, bias_b2)
+    return(abs_bias, bias_b2, active, rE, RE, estimated_angles, kappa_E, kappa_I, number_of_bumps ) #bias_b1, bias_b2)
 
 
 ###
