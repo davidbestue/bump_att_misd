@@ -282,8 +282,8 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
         estimated_angle_2=np.degrees(param[2]+pi)  
         estimated_angles = [estimated_angle_1, estimated_angle_2]
         estimated_angles.sort()
-        abs_bias = abs(estimated_angles[0] -  angle_target_i ) ### change the error stuff
-        bias_b2 = estimated_angles[0] -  angle_target_i 
+        abs_bias = abs(angle_target_i - estimated_angles[1] ) ### change the error stuff
+        bias_b2 = angle_target_i  - estimated_angles[1]   
         #
     elif number_of_bumps ==1:
         estimated_angles =decode_rE(rE)
