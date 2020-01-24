@@ -228,7 +228,7 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
     end_sim =time.time()
     total_time= end_sim - st_sim 
     total_time = round(total_time, 1)
-    print('Simulation time: ' + str(total_time) + 's')
+    #print('Simulation time: ' + str(total_time) + 's')
 
     ###### Fit
     def von_misses(x,mu,k):
@@ -301,7 +301,7 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
         ans = (exp( param[1] * cos(X-param[0]))) / (2*pi*scipy.special.i0(param[1])) 
         if param[0]<0:
             estimated_angles =decode_rE(rE)
-            print('1 - with decode function')
+            #print('1 - with decode function')
             decode_func = 1
         else:
             estimated_angles=np.degrees(param[0]+pi) 
@@ -313,7 +313,7 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
         final_bias = [bias_b1, bias_b2] # de la otra manera estas forzando la media todo el rato
         skip_r_sq=False
         success=True
-        print('Gaussian fit')
+        #print('Gaussian fit')
         param_g, covs_g = curve_fit(gauss, X, y, maxfev=10000)
         std_g = param_g[1]
 
