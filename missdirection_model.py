@@ -99,7 +99,7 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
     st_sim =time.time()
     dt=2
     nsteps=int(floor(totalTime/dt));
-    origin = pi
+    origin = np.radians(angle_target_i)
     rE=zeros((N,1));
     rI=zeros((N,1));
     #Connectivities
