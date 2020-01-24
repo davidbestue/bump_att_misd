@@ -186,8 +186,10 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
     if n_stims==2:
         interference = Interference_effects( [decode_rE(stimulus1)], [decode_rE(rE)], [decode_rE(stimulus2)])[0]
 
-    p_targ1 = int((N * np.degrees(origin + separation))/360)
-    p_targ2 = int((N * np.degrees(origin - separation))/360)
+    #p_targ1 = int((N * np.degrees(origin + separation))/360)
+    #p_targ2 = int((N * np.degrees(origin - separation))/360)
+    p_targ1 = int((N * np.degrees(np.pi + separation))/360)
+    p_targ2 = int((N * np.degrees(np.pi - separation))/360)
     #
     if plot_rate==True:
         #### plot dynamics
