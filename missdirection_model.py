@@ -89,6 +89,7 @@ def viz_polymonial(X, y, poly_reg, pol_reg):
     plt.show(block=False)
     return
 
+
 # model(totalTime=2000, targ_onset=100,  presentation_period=100, separation=2) 
 
 
@@ -108,8 +109,8 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
     WE=zeros((N,N));
     WI=zeros((N,N));
     separation =  angle_separation*pi/360
-    angle_target=angle_target_i+angle_separation/2
-    angle_distractor=angle_target_i-angle_separation/2
+    angle_target=angle_target_i
+    angle_distractor=angle_target_i-angle_separation
     if n_stims==1:
         separation=0
 
@@ -160,13 +161,15 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
     #generation of the noise and the connectivity between inhib and exit
     RE=zeros((N,nsteps));
     RI=zeros((N,nsteps));
+
     f = lambda x : x*x*(x>0)*(x<1) + reshape(array([cmath.sqrt(4*x[i]-3) for i in range(0, len(x))]).real, (N,1)) * (x>=1)
     ### diferential equations
     for i in range(0, nsteps):
         noiseE = sigE*random.randn(N,1);
         noiseI = sigI*random.randn(N,1);
         #differential equations for connectivity
-        IE= GEE*dot(WE,rE) - GIE*dot(WI,rI) + I0E*ones((N,1));
+
+        IE= GEE*dot(WE,rE) - GIE*dot(WI,rI) +  I0E*ones((N,1)) #excit;
         II= GEI*dot(WE,rE) +  (I0I-GII*mean(rI))*ones((N,1));
         #
         if i>stimon and i<stimoff:
