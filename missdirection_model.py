@@ -93,7 +93,8 @@ def viz_polymonial(X, y, poly_reg, pol_reg):
 
 
 def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, tauI=4,  n_stims=2, I0E=0.1, I0I=0.5, GEE=0.022, GEI=0.019, 
- GIE=0.01 , GII=0.1, sigE=0.5, sigI=1.6, kappa_E=100, kappa_I=1.75, kappa_stim=100, N=512, plot_connectivity=False, plot_rate=False, plot_hm=True , plot_fit=True):
+ GIE=0.01 , GII=0.1, sigE=0.5, sigI=1.6, kappa_E=100, kappa_I=1.75, kappa_stim=100, N=512, plot_connectivity=False, plot_rate=False, plot_hm=True ,
+  plot_fit=True, angle_target_i =180):
     #
     st_sim =time.time()
     dt=2
@@ -107,8 +108,8 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
     WE=zeros((N,N));
     WI=zeros((N,N));
     separation =  angle_separation*pi/360
-    angle_target=180+angle_separation/2
-    angle_distractor=180-angle_separation/2
+    angle_target=angle_target_i+angle_separation/2
+    angle_distractor=angle_target_i-angle_separation/2
     if n_stims==1:
         separation=0
 
