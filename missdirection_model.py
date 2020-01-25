@@ -271,7 +271,7 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
 
     ### Fit
     #df_n_p=pd.DataFrame()
-    #df_n_p['rE'] = rE.reshape(512)
+    #df_n_p['rE'] = rE.reshape(512) ##
     #r = df_n_p['rE'].rolling(window=20).mean()
     #number_of_bumps = len(scipy.signal.find_peaks(r, 2)[0]) 
 
