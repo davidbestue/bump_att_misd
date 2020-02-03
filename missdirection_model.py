@@ -432,6 +432,7 @@ def model(totalTime, targ_onset_1, targ_onset_2, presentation_period, angle_targ
         interference = Interference_effects( [decode_rE(stimulus1)], [decode_rE(rE)], [decode_rE(stimulus2)])[0]
 
     p_targ1 = int((N * np.degrees(origin))/360)
+    p_targ1 = int((N * np.degrees(np.radians(180)))/360)
     p_targ2 = int((N * np.degrees(origin + separation))/360)
     #
     if plot_rate==True:
@@ -461,7 +462,8 @@ def model(totalTime, targ_onset_1, targ_onset_2, presentation_period, angle_targ
         #plt.plot([stimon, nsteps], [p_targ1, p_targ1], '--r',) ## flipped, so it is p_target 
         plt.yticks([])
         plt.xticks([])
-        plt.yticks([N/8, 3*N/8, 5*N/8, 7*N/8 ] ,['45','135','225', '315'])
+        plt.yticks([N/8, 3*N/8, N/2, 5*N/8, 7*N/8 ] ,['45','135', '180', '225', '315'])
+        plt.ylim( 3*N/8, 5*N/8)
         #plt.ylim( 3*N/8, 5*N/8)
         #plt.plot([stimon, stimon,], [0+20, N-20], 'k-', label='onset')
         #plt.plot([stimoff, stimoff,], [0+20, N-20], 'k--', label='offset')
