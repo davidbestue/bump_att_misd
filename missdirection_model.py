@@ -503,6 +503,7 @@ def model(totalTime, targ_onset_1, targ_onset_2, presentation_period, angle_targ
             number_of_bumps=most_frequent(peaks_list)
     #
     number_of_bumps=most_frequent(peaks_list)
+    
     return(abs_err, err, active, decode, rE, RE, total_time, number_of_bumps) #bias_b1, bias_b2)
 
 
