@@ -463,7 +463,7 @@ def model(totalTime, targ_onset_1, targ_onset_2, presentation_period, angle_targ
         plt.yticks([])
         plt.xticks([])
         plt.yticks([N/8, 3*N/8, N/2, 5*N/8, 7*N/8 ] ,['45','135', '180', '225', '315'])
-        plt.ylim( 3*N/8, 5*N/8)
+        #plt.ylim( 3*N/8, 5*N/8)
         #plt.ylim( 3*N/8, 5*N/8)
         #plt.plot([stimon, stimon,], [0+20, N-20], 'k-', label='onset')
         #plt.plot([stimoff, stimoff,], [0+20, N-20], 'k--', label='offset')
