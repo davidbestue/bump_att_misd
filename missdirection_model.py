@@ -90,6 +90,17 @@ def viz_polymonial(X, y, poly_reg, pol_reg):
     return
 
 
+
+def err_deg(a1,ref):
+    ### Calculate the error ref-a1 in an efficient way in the circular space
+    ### it uses complex numbers!
+    ### Input in degrees (0-360)
+    a1=np.radians(a1)
+    ref=np.radians(ref)
+    err = np.angle(np.exp(1j*ref)/np.exp(1j*(a1) ), deg=True) 
+    err=round(err, 2)
+    return err
+
 # model(totalTime=2000, targ_onset=100,  presentation_period=100, separation=2) 
 
 
