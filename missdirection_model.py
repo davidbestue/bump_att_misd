@@ -486,24 +486,23 @@ def model(totalTime, targ_onset_1, targ_onset_2, presentation_period, angle_targ
     abs_err = abs(err)
     active = rE[256][0]>2
     #
-    ## n_bumps
+    ## n_bumps    
+    df_n_p=pd.DataFrame()
+    df_n_p['rE'] = rE.reshape(512)
+    peaks_list=[]
+    for n_w_s in range(1, 100):
+        r = df_n_p['rE'].rolling(window=n_w_s).mean()
+        number_of_bumps = len(scipy.signal.find_peaks(r, 2)[0]) 
+        peaks_list.append(number_of_bumps)
     #
-    # df_n_p=pd.DataFrame()
-    # df_n_p['rE'] = rE.reshape(512)
-    # peaks_list=[]
-    # for n_w_s in range(1, 100):
-    #     r = df_n_p['rE'].rolling(window=n_w_s).mean()
-    #     number_of_bumps = len(scipy.signal.find_peaks(r, 2)[0]) 
-    #     peaks_list.append(number_of_bumps)
-    # #
-    # if number_of_bumps == 0:
-    #     if peaks_list==[0 for i in range(len(peaks_list))]:
-    #         number_of_bumps = 0
-    #     else:
-    #         peaks_list[:] = (value for value in peaks_list if value != 0)
-    #         number_of_bumps=most_frequent(peaks_list)
-    # #
-    # number_of_bumps=most_frequent(peaks_list)
-    return(abs_err, err, active, decode, rE, RE, total_time) #bias_b1, bias_b2)
+    if number_of_bumps == 0:
+        if peaks_list==[0 for i in range(len(peaks_list))]:
+            number_of_bumps = 0
+        else:
+            peaks_list[:] = (value for value in peaks_list if value != 0)
+            number_of_bumps=most_frequent(peaks_list)
+    #
+    number_of_bumps=most_frequent(peaks_list)
+    return(abs_err, err, active, decode, rE, RE, total_time, number_of_bumps) #bias_b1, bias_b2)
 
 
