@@ -324,4 +324,164 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
 
 ###
 ####
+###################
+###################
+
+
+
+def model(totalTime, targ_onset_1, targ_onset_2, presentation_period, angle_target_i, angle_separation, tauE=9, 
+          tauI=4,  n_stims=2, I0E=0.1, I0I=0.5, GEE=0.022, GEI=0.019, GIE=0.01 , GII=0.1, sigE=0.5, sigI=1.6, 
+          kappa_E=100, kappa_I=1.75, kappa_stim=100, N=512, plot_connectivity=False, plot_rate=False, 
+          plot_hm=True , plot_fit=True, stim_strengthE=1., stim_strengthI=1.):
+    #
+    st_sim =time.time()
+    dt=2
+    nsteps=int(floor(totalTime/dt));
+    origin = np.radians(angle_target_i)
+    rE=zeros((N,1));
+    rI=zeros((N,1));
+    #Connectivities
+    v_E=zeros((N));
+    v_I=zeros((N));
+    WE=zeros((N,N));
+    WI=zeros((N,N));
+    separation =  np.radians(angle_separation)
+    angle_target=angle_target_i
+    angle_distractor=angle_target_i-angle_separation
+    if n_stims==1:
+        separation=0
+
+
+    theta = [float(range(0,N)[i])/N*2*pi for i in range(0,N)] 
+    for i in range(0, N):
+        v_E_new=[e**(kappa_E*cos(theta[f]))/(2*pi*scipy.special.i0(kappa_E)) for f in range(0, len(theta))]    
+        v_I_new=[e**(kappa_I*cos(theta[f]))/(2*pi*scipy.special.i0(kappa_I)) for f in range(0, len(theta))]
+        ###    
+        vE_NEW=roll(v_E_new,i)
+        vI_NEW=roll(v_I_new,i) #to roll
+        ###    
+        WE[:,i]=vE_NEW
+        WI[:,i]=vI_NEW
+    #
+    # Plot of the connectivity profile
+    if plot_connectivity ==True:
+        plt.figure()
+        plt.plot(WE[250, :], label='E')
+        plt.plot(WI[250, :], label = 'I')
+        plt.ylim(0,6)
+        plt.gca().spines['right'].set_visible(False) #no right axis
+        plt.gca().spines['top'].set_visible(False) #no  top axis
+        plt.gca().get_xaxis().tick_bottom()
+        plt.gca().get_yaxis().tick_left()
+        plt.show(block=False)
+    ##
+    # Stims
+    if n_stims==2:
+        stimulus1=zeros((N))
+        stimulus2=zeros((N))
+        for i in range(0, N):
+            stimulus1[i]=e**(kappa_stim*cos(theta[i] + origin)) / (2*pi*scipy.special.i0(kappa_stim))
+            stimulus2[i]=e**(kappa_stim*cos(theta[i] + origin + separation)) / (2*pi*scipy.special.i0(kappa_stim))
+        #stimulus= (stimulus1 + stimulus2);
+        #stimulus=reshape(stimulus, (N,1))
+        stimulus_1=reshape(stimulus1, (N,1))
+        stimulus_2=reshape(stimulus2, (N,1))
+    elif n_stims==1:
+        stimulus2=zeros((N));
+        for i in range(0, N):
+            stimulus2[i]=e**(kappa_stim*cos(theta[i] + origin)) / (2*pi*scipy.special.i0(kappa_stim))
+        stimulus=stimulus2
+        stimulus=reshape(stimulus, (N,1))
+    ###
+    ###
+    stimon1 = floor(targ_onset_1/dt);
+    stimoff1 = floor(targ_onset_1/dt) + floor(presentation_period/dt) ;
+    stimon2 = floor(targ_onset_2/dt);
+    stimoff2 = floor(targ_onset_2/dt) + floor(presentation_period/dt) ;
+    #Simulation
+    #generation of the noise and the connectivity between inhib and exit
+    RE=zeros((N,nsteps));
+    RI=zeros((N,nsteps));
+    f = lambda x : x*x*(x>0)*(x<1) + reshape(array([cmath.sqrt(4*x[i]-3) for i in range(0, len(x))]).real, (N,1)) * (x>=1)
+    ### diferential equations
+    for i in range(0, nsteps):
+        noiseE = sigE*random.randn(N,1);
+        noiseI = sigI*random.randn(N,1);
+        #differential equations for connectivity
+        IE= GEE*dot(WE,rE) - GIE*dot(WI,rI) + I0E*ones((N,1));
+        II= GEI*dot(WE,rE) +  (I0I-GII*mean(rI))*ones((N,1));
+        #
+        if i>stimon1 and i<stimoff1:
+            IE=IE+stim_strengthE*stimulus_1;
+            II=II+stim_strengthI*stimulus_1;
+        if i>stimon2 and i<stimoff2:
+            IE=IE+stim_strengthE*stimulus_2;
+            II=II+stim_strengthI*stimulus_2;
+        #
+        #rates of exit and inhib
+        rE = rE + (f(IE) - rE + noiseE)*dt/tauE;
+        rI = rI + (f(II) - rI + noiseI)*dt/tauI;
+        rEr=reshape(rE, N)
+        rIr=reshape(rI, N)
+        #drawnow
+        RE[:,i] = rEr;
+        RI[:,i] = rIr;
+    #
+    ## metrics
+    if n_stims==2:
+        interference = Interference_effects( [decode_rE(stimulus1)], [decode_rE(rE)], [decode_rE(stimulus2)])[0]
+
+    p_targ1 = int((N * np.degrees(origin))/360)
+    p_targ2 = int((N * np.degrees(origin + separation))/360)
+    #
+    if plot_rate==True:
+        #### plot dynamics
+        fig = plt.figure()
+        plt.title('Rate dynamics')
+        plt.plot(RE[N-p_targ1, :], 'b', label='target1')
+        plt.plot(RE[N-p_targ2, :], 'r', label='target2')
+        plt.xlabel('time (ms)')
+        plt.ylabel('rate (Hz)')
+        plt.legend()
+        plt.show(block=False)
+    if plot_hm==True:
+        #### plot heatmap
+        RE_sorted=flipud(RE)
+        sns.set_context("poster", font_scale=1.1)
+        sns.set_style("ticks")
+        plt.figure(figsize=(10,5))
+        #sns.heatmap(RE_sorted, cmap='binary', vmax=8)
+        sns.heatmap(RE_sorted, cmap='RdBu_r')
+        #plt.title('BUMP activity') # remove title
+        #plt.ylabel('Angle')
+        plt.xlabel('time (s)')
+        #plt.ylim(int(3*N/8), int(5*N/8))
+        plt.plot([stimon1, nsteps], [p_targ1, p_targ1], '--k', linewidth=2) ## flipped, so it is p_target 
+        plt.plot([stimon2, nsteps], [p_targ2, p_targ2], '--k', linewidth=2) ## flipped, so it is p_target 
+        #plt.plot([stimon, nsteps], [p_targ1, p_targ1], '--r',) ## flipped, so it is p_target 
+        plt.yticks([])
+        plt.xticks([])
+        plt.yticks([N/8, 3*N/8, 5*N/8, 7*N/8 ] ,['45','135','225', '315'])
+        #plt.ylim( 3*N/8, 5*N/8)
+        #plt.plot([stimon, stimon,], [0+20, N-20], 'k-', label='onset')
+        #plt.plot([stimoff, stimoff,], [0+20, N-20], 'k--', label='offset')
+        #plt.plot([stimon, stimon,], [0+20, N-20], 'k-', linewidth=0.5)
+        #plt.plot([stimoff, stimoff,], [0+20, N-20], 'k-', linewidth=0.5)
+        #plt.legend()
+        plt.show(block=False)
+    
+    
+    ## print time consumed
+    end_sim =time.time()
+    total_time= end_sim - st_sim 
+    total_time = round(total_time, 1)
+    #print('Simulation time: ' + str(total_time) + 's')
+    
+    ####
+    decode = decode_rE(flipud(rE))
+    err=err_deg(decode, angle_target_i)
+    abs_err = abs(err)
+
+    return(abs_err, err, decode, rE, RE, total_time) #bias_b1, bias_b2)
+
 
