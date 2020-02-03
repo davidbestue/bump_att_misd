@@ -282,24 +282,33 @@ def model(totalTime, targ_onset, presentation_period, angle_separation, tauE=9, 
         estimated_angle_2=np.degrees(param[2]+pi)  
         estimated_angles = [estimated_angle_1, estimated_angle_2]
         estimated_angles.sort()
-        abs_bias = abs(angle_target_i - estimated_angles[1] ) ### change the error stuff
-        bias_b2 = angle_target_i  - estimated_angles[1]   
+        #abs_bias = abs(angle_target_i - estimated_angles[1] ) ### change the error stuff
+        #bias_b2 = angle_target_i  - estimated_angles[1]  
+        err=err_deg(estimated_angles[1], angle_target_i)
+        err_abs = abs(err)
+         
         #
     elif number_of_bumps ==1:
         estimated_angles =decode_rE(rE)
-        abs_bias = abs( 180 - decode_rE(rE) )## scon decode_rE
-        bias_b2 = 180 - decode_rE(rE) ## scon decode_rE
+        err=err_deg(estimated_angles, 180)
+        err_abs = abs(err)
+        #abs_bias = abs( 180 - decode_rE(rE) )## scon decode_rE
+        #bias_b2 = 180 - decode_rE(rE) ## scon decode_rE
         
     ##
     else:
         estimated_angles =decode_rE(rE)
-        abs_bias = abs( 180 - decode_rE(rE) )## scon decode_rE
-        bias_b2 = 180 - decode_rE(rE) ## scon decode_rE
+        err=err_deg(estimated_angles, 180)
+        err_abs = abs(err)
+        #abs_bias = abs( 180 - decode_rE(rE) )## scon decode_rE
+        #bias_b2 = 180 - decode_rE(rE) ## scon decode_rE
     ###
     ###
     active = rE[256][0]>2
+    #err=err_deg(decode, 180)
+    #err_2 = err_deg(decode, (angle_target_i+angle_separation) )
     #
-    return(abs_bias, bias_b2, active, rE, RE, estimated_angles, kappa_E, kappa_I, number_of_bumps ) #bias_b1, bias_b2)
+    return(err_abs, err, active, rE, RE, estimated_angles, kappa_E, kappa_I, number_of_bumps ) #bias_b1, bias_b2)
 
 
 ###
