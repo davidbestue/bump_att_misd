@@ -482,7 +482,7 @@ def model(totalTime, targ_onset_1, targ_onset_2, presentation_period, angle_targ
     
     ####
     decode = decode_rE(flipud(rE))
-    err=err_deg(decode, angle_target_i)
+    err=err_deg(decode, 180)
     abs_err = abs(err)
 
     return(abs_err, err, decode, rE, RE, total_time) #bias_b1, bias_b2)
