@@ -474,7 +474,7 @@ def model(totalTime, targ_onset_1, targ_onset_2, presentation_period, angle_targ
         plt.show(block=False)
     
     
-    ## print time consumed
+    ## print the time consumed
     end_sim =time.time()
     total_time= end_sim - st_sim 
     total_time = round(total_time, 1)
