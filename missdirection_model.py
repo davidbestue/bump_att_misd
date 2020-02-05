@@ -408,7 +408,7 @@ def model(totalTime, targ_onset_1, targ_onset_2, presentation_period, angle_targ
         noiseE = sigE*random.randn(N,1);
         noiseI = sigI*random.randn(N,1);
         #differential equations for connectivity
-        IE= GEE*dot(WE,rE) - GIE*dot(WI,rI) + I0E*ones((N,1));
+        IE= GEE*dot(WE,rE) - GIE*dot(WI,rI) +  I0E*ones((N,1));
         II= GEI*dot(WE,rE) +  (I0I-GII*mean(rI))*ones((N,1));
         #
         if i>stimon1 and i<stimoff1:
